@@ -4,13 +4,21 @@ export const AuthContext = React.createContext();
 
 function AuthContextProvider({ children }) {
   const [isAuth, setIsAuth] = useState(false);
+  const [change, setChange] = useState(false);
+  const [mail, setMail] = useState("");
 
-  const toggleAuth = () => {
+  const toggleAuth = (el = "") => {
     setIsAuth(!isAuth);
+    setMail(el);
+  };
+  const toggleChange = () => {
+    setChange(!change);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuth, toggleAuth }}>
+    <AuthContext.Provider
+      value={{ mail, isAuth, toggleAuth, toggleChange, change }}
+    >
       {children}
     </AuthContext.Provider>
   );

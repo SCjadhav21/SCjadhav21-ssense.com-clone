@@ -2,8 +2,7 @@ import {
   Text,
   Button,
   InputGroup,
-  InputRightElement,
-  Input,
+  Select,
   Img,
   SimpleGrid,
   Flex,
@@ -13,16 +12,36 @@ import React from "react";
 // import { useContext } from "react";
 // import { AuthContext } from "../Context/AuthContext";
 import axios from "axios";
-import { Link, Navigate } from "react-router-dom";
+
+import { useContext } from "react";
+import { AuthContext } from "../Context/AuthContext";
 
 export function Mens() {
   let [data, setData] = React.useState([]);
 
+  const { toggleChange } = useContext(AuthContext);
+
+  const createData = (el) => {
+    fetch("https://pacific-refuge-88537.herokuapp.com/api/singleProduct", {
+      method: "POST",
+
+      body: JSON.stringify(el),
+
+      headers: {
+        "Content-type": "application/json"
+      }
+    });
+
+    alert("product added succesfully to bag");
+    toggleChange();
+  };
+
   React.useEffect(() => {
+    let url =
+      "https://pacific-refuge-88537.herokuapp.com/api/clothing?category=Mens";
+
     axios
-      .get(
-        "https://pacific-refuge-88537.herokuapp.com/api/clothing?category=Mens"
-      )
+      .get(url)
       .then((res) => {
         setData(res.data);
       })
@@ -30,18 +49,30 @@ export function Mens() {
         console.log(err);
       });
   }, []);
-  console.log(data);
+
   return (
     <Box>
-      <SimpleGrid columns={[2, null, 3]} spacing="40px">
-        {data?.map((el) => {
+      <SimpleGrid columns={[2, 3, 4]} spacing="40px">
+        {data?.map((el, index) => {
           return (
-            <Box heigth="full" key={Date.now().toString()}>
+            <Box
+              display="grid"
+              // flexDirection="columns"
+              justifyContent="center"
+              justifyItems="center"
+              padding="20px"
+              boxShadow="rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset"
+              heigth="full"
+              key={index}
+            >
               <Img heigth="50%" src={el.images[1]}></Img>
               <Text>{el.title}</Text>
               <Text>{el.subtitle}</Text>
-              <Text>Price : ${el.discounted_price}</Text>
+              <Text>Price : ${el.strike_price}</Text>
               <Text>Rating : {el.rating}</Text>
+              <Button cursor="pointer" onClick={() => createData(el)}>
+                ADD to CART
+              </Button>
             </Box>
           );
         })}

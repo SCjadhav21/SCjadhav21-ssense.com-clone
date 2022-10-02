@@ -25,9 +25,17 @@ import { AuthContext } from "../Context/AuthContext";
 
 import { Link } from "react-router-dom";
 import { SearchIcon, HamburgerIcon } from "@chakra-ui/icons";
+import React from "react";
 export function Navbar() {
-  const { isAuth, toggleAuth } = useContext(AuthContext);
+  const { isAuth, toggleAuth, change } = useContext(AuthContext);
+  const [data, setData] = React.useState(0);
 
+  React.useEffect(() => {
+    fetch("https://pacific-refuge-88537.herokuapp.com/api/singleProduct")
+      .then((res) => res.json())
+      .then((res) => setData(res.length))
+      .catch((err) => console.log(err));
+  }, [change]);
   function toggleState() {
     toggleAuth();
 
@@ -37,7 +45,7 @@ export function Navbar() {
   return (
     <>
       <Show above="md">
-        <Box>
+        <Box w="100%">
           <Flex bg=" black" color="#FFF" p="10px">
             <Box fontSize="11px" m="10px" w="30%">
               <Flex>
@@ -118,7 +126,7 @@ export function Navbar() {
                   )}
                 </Box>
                 <Box margin="10px">
-                  <Link to="/cart">SHOPING_BAG(0)</Link>
+                  <Link to="/cart">SHOPING_BAG({data})</Link>
                 </Box>
               </Flex>
             </Box>
@@ -126,7 +134,7 @@ export function Navbar() {
         </Box>
       </Show>
       <Show below="md">
-        <Box>
+        <Box position="fixed" w="100%" bg="white">
           <Flex p="10px">
             <Box>
               <Menu>
@@ -152,7 +160,7 @@ export function Navbar() {
                     <Link to="/login">LOGIN</Link>
                   </MenuItem>
                   <MenuItem>
-                    <Link to="/cart">SHOPING_BAG(0)</Link>
+                    <Link to="/cart">SHOPING_BAG({data})</Link>
                   </MenuItem>
                 </MenuList>
               </Menu>
@@ -225,6 +233,7 @@ export function Navbar() {
                     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMsq2lipdJDei07_jKRH5v4WlTzgQ2YuSEQdoZj4BaWzf1NBmOkss3pbScJairRJuk8E0&usqp=CAU"
                   ></Img>
                 </Link>
+                {data}
               </Button>
             </Box>
           </Flex>

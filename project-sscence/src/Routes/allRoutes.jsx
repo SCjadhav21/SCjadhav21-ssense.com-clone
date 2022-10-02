@@ -7,6 +7,7 @@ import { OtherProduct } from "../Pages/everythingElse";
 import { Login } from "../Pages/login";
 import { Cart } from "../Pages/cart";
 import { Signup } from "../Pages/signup";
+import { Checkout } from "../Pages/checkout";
 function AllRoutes() {
   return (
     <Routes>
@@ -17,6 +18,7 @@ function AllRoutes() {
       <Route path="/everything-else" element={<OtherProduct />}></Route>
       <Route path="/cart" element={<Cart />}></Route>
       <Route path="/login" element={<Login />}></Route>
+      <Route path="/checkout" element={<Checkout />}></Route>
     </Routes>
   );
 }

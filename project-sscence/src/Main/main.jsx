@@ -10,36 +10,9 @@ import {
   Button
 } from "@chakra-ui/react";
 import React from "react";
+import { Link } from "react-router-dom";
 
 export function Main() {
-  //   let [flag,setFlag]=React.useState(false);
-  //   let url = "https://pacific-refuge-88537.herokuapp.com/api/signup";
-
-  // let adddata = async (data) => {
-
-  //  let res = await fetch(url);
-  //   res = await res.json();
-  //   console.log(res)
-
-  //   res.forEach((el) => {
-  //   if (el.email == data.email) {
-  //     flag = false;
-  //   }
-  // });
-  // if (flag === true) {
-  //   let res = await fetch(url, {
-  //     method: "POST",
-  //     body: JSON.stringify(data),
-  //     headers: {
-  //       "content-type": "application/json",
-  //     },
-  //   });
-
-  //     window.location.href = "signin.html";
-  //   } else {
-  //     alert("Email is alredy used");
-  //   }
-  // };
   return (
     <>
       <Box padding={{ sm: "0rem", md: "0.5rem 7rem" }}>
@@ -136,7 +109,9 @@ export function Main() {
               <Text margin="2px 20px 2px 20px">Featured:</Text>
               <Text>FeaturedALEXANDER MCQUEEN</Text>
             </Flex>
-            <Button marginBottom="20px">SHOP MENSWEAR</Button>
+            <Button marginBottom="20px">
+              <Link to="/mens">SHOP MENSWEAR</Link>
+            </Button>
           </Box>
           <Box height="600px">
             <Img
@@ -148,7 +123,10 @@ export function Main() {
               <Text margin="2px 20px 2px 20px">Featured:</Text>
               <Text>ALEXANDER MCQUEEN</Text>
             </Flex>
-            <Button marginBottom="20px">SHOP WOMENSWEAR</Button>
+            <Button marginBottom="20px">
+              {" "}
+              <Link to="/womens">SHOP WOMENSWEAR</Link>
+            </Button>
           </Box>
         </SimpleGrid>
       </Box>
@@ -339,7 +317,9 @@ export function Main() {
               <Text margin="2px 20px 2px 20px">Featured:</Text>
               <Text>WOOYOUNGMI</Text>
             </Flex>
-            <Button marginBottom="20px">SHOP MENSWEAR</Button>
+            <Button marginBottom="20px">
+              <Link to="/mens">SHOP MENSWEAR</Link>
+            </Button>
           </Box>
           <Box height="600px">
             <Img
@@ -351,7 +331,9 @@ export function Main() {
               <Text margin="2px 20px 2px 20px">Featured:</Text>
               <Text>COPERNI</Text>
             </Flex>
-            <Button marginBottom="20px">SHOP WOMENSWEAR</Button>
+            <Button marginBottom="20px">
+              <Link to="/womens">SHOP WOMENSWEAR</Link>
+            </Button>
           </Box>
         </SimpleGrid>
       </Box>
@@ -433,7 +415,9 @@ export function Main() {
               <Text margin="2px 20px 2px 20px">Featured:</Text>
               <Text>SHIMONE ROCHA</Text>
             </Flex>
-            <Button marginBottom="20px">SHOP MENSWEAR</Button>
+            <Button marginBottom="20px">
+              <Link to="/mens">SHOP MENSWEAR</Link>
+            </Button>
           </Box>
           <Box height="600px">
             <Img
@@ -445,7 +429,9 @@ export function Main() {
               <Text margin="2px 20px 2px 20px">Featured:</Text>
               <Text>SHIMONE ROCHA</Text>
             </Flex>
-            <Button marginBottom="20px">SHOP WOMENSWEAR</Button>
+            <Button marginBottom="20px">
+              <Link to="/womens">SHOP WOMENSWEAR</Link>
+            </Button>
           </Box>
         </SimpleGrid>
       </Box>
