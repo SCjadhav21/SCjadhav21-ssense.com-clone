@@ -5,7 +5,9 @@ import {
   InputRightElement,
   Input,
   Flex,
-  Box
+  Box,
+  useToast,
+  Center,
 } from "@chakra-ui/react";
 import React from "react";
 import { useContext } from "react";
@@ -14,6 +16,7 @@ import axios from "axios";
 import { Link, Navigate } from "react-router-dom";
 
 export function Login() {
+  const toast = useToast();
   let [form, setForm] = React.useState({ email: "", password: "" });
 
   const [show, setShow] = React.useState(false);
@@ -24,28 +27,43 @@ export function Login() {
     const { name, value } = e.target;
     setForm({
       ...form,
-      [name]: value
+      [name]: value,
     });
   };
 
-  let url = "https://pacific-refuge-88537.herokuapp.com/api/signup";
+  let url = "https://mock-server-app-pzg9.onrender.com/signup";
 
-  function getData() {
-    return axios
+  function getData(e) {
+    e.preventDefault();
+    axios
       .get(url)
       .then((res) => {
         let count = 0;
         let count1 = 0;
         res.data.forEach((el) => {
           if (el.email == form.email && el.password == form.password) {
-            toggleAuth(form.email);
           } else {
             count++;
           }
           count1++;
         });
         if (count === count1) {
-          alert("Wrong Credential");
+          toast({
+            title: "Wrong Credential",
+            description: "Your password or email is incorrect",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+        } else {
+          toast({
+            title: "Login Successfull",
+            description: "You are succesfully logged in your account.",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+          });
+          toggleAuth(form.email);
         }
       })
       .catch((err) => console.log(err));
@@ -56,46 +74,63 @@ export function Login() {
 
   return (
     <>
-      <Box w="100%" display="flex" justifyContent="center">
+      <Box pt={"80px"} w="100%" display="flex" justifyContent="center">
         <Flex w="40%" direction="column" justifyContent="center">
-          <Text m="10px">LOGIN HERE</Text>
-
-          <Text marginLeft="10px" alignSelf="flex-start" mb="8px">
-            Email :
-          </Text>
-          <Input
-            name="email"
-            onChange={handleChange}
-            border="2px solid #000000"
-            placeholder="Enter Email"
-            m="0px 10px 10px 10px"
-          />
-          <InputGroup w="full" m="0px 10px 10px 10px">
+          <Center>
+            {" "}
+            <Text m="20px" fontWeight={"bold"} fontSize="25px">
+              LOGIN HERE
+            </Text>
+          </Center>
+          <form onSubmit={getData}>
+            <Text marginLeft="10px" alignSelf="flex-start" mb="8px">
+              Email :
+            </Text>
             <Input
-              name="password"
+              name="email"
+              type="email"
+              required
               onChange={handleChange}
               border="2px solid #000000"
-              placeholder="Enter Password"
-              pr="4.5rem"
-              type={show ? "text" : "password"}
+              placeholder="Enter Email"
+              m="0px 10px 10px 10px"
             />
-            <InputRightElement width="4.5rem">
-              <Button h="1.75rem" size="sm" onClick={handleClick}>
-                {show ? "Hide" : "Show"}
-              </Button>
-            </InputRightElement>
-          </InputGroup>
-          <Button onClick={getData} bg="black" color="#FFF" m="10px" w="full">
-            Continue
-          </Button>
+            <Text marginLeft="10px" alignSelf="flex-start" mb="8px">
+              Password :
+            </Text>
+            <InputGroup w="full" m="0px 10px 10px 10px">
+              <Input
+                required
+                name="password"
+                onChange={handleChange}
+                border="2px solid #000000"
+                placeholder="Enter Password"
+                pr="4.5rem"
+                type={show ? "text" : "password"}
+              />
+              <InputRightElement width="4.5rem">
+                <Button h="1.75rem" size="sm" onClick={handleClick}>
+                  {show ? "Hide" : "Show"}
+                </Button>
+              </InputRightElement>
+            </InputGroup>
+
+            <Button type="submit" bg="black" color="#FFF" m="10px" w="full">
+              Continue
+            </Button>
+          </form>
         </Flex>
       </Box>
       <Box w="100%" display="flex" justifyContent="center">
         <Flex w="40%" direction="column" justifyContent="center">
-          <Text m="10px"> Not have Account CREATE acount here</Text>
-          <Button alignSelf="center">
-            <Link to="/signup">Click to create acount</Link>
-          </Button>
+          <Text m="10px" display={"flex"}>
+            Not have Account?
+            <span
+              style={{ marginLeft: "5px", fontWeight: "bold", color: "blue" }}
+            >
+              <Link to="/signup"> Create acount here </Link>
+            </span>{" "}
+          </Text>
         </Flex>
       </Box>
     </>

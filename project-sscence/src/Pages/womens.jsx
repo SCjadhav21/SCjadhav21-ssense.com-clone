@@ -1,43 +1,69 @@
-import { Text, Button, Img, SimpleGrid, Flex, Box } from "@chakra-ui/react";
-import { useContext } from "react";
+import {
+  Text,
+  Button,
+  Img,
+  SimpleGrid,
+  Flex,
+  Box,
+  useToast,
+} from "@chakra-ui/react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../Context/AuthContext";
 import React from "react";
 // import { useContext } from "react";
 // import { AuthContext } from "../Context/AuthContext";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
 
 export function Womens() {
+  const toast = useToast();
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(12);
   let [data, setData] = React.useState([]);
+  let state = useLocation().state;
   const { toggleChange } = useContext(AuthContext);
   React.useEffect(() => {
+    let url;
+
+    if (state?.data && state?.data !== "" && state?.data !== null) {
+      url = `https://mock-server-app-pzg9.onrender.com/clothing?category=Womens&_page=${page}&_limit=12&q=${state.data}`;
+    } else {
+      url = `https://mock-server-app-pzg9.onrender.com/clothing?category=Womens&_page=${page}&_limit=12`;
+    }
+
     axios
-      .get(
-        "https://pacific-refuge-88537.herokuapp.com/api/clothing?category=Womens"
-      )
+      .get(url)
       .then((res) => {
         setData(res.data);
+        setTotal(res.data.length);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [page, state]);
 
   const createData = (el) => {
-    fetch("https://pacific-refuge-88537.herokuapp.com/api/singleProduct", {
+    fetch("https://mock-server-app-pzg9.onrender.com/singleProduct", {
       method: "POST",
 
       body: JSON.stringify(el),
 
       headers: {
-        "Content-type": "application/json"
-      }
+        "Content-type": "application/json",
+      },
     });
-    alert("product added succesfully to bag");
+    toast({
+      title: "Cart Added",
+      description: "product added succesfully to bag",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+    });
     toggleChange();
   };
 
   return (
-    <Box>
+    <Box pt={"80px"}>
       <SimpleGrid columns={[2, 3, 4]} gap={30}>
         {data?.map((el, index) => {
           return (
@@ -63,8 +89,23 @@ export function Womens() {
           );
         })}
       </SimpleGrid>
+      <Box display={"flex"} gap={6} m="30px">
+        <Button
+          bg="#BA9AE1"
+          disabled={page <= 1}
+          onClick={() => setPage(page - 1)}
+        >
+          Prev
+        </Button>
+        <Button bg="#BA9AE1">{page}</Button>
+        <Button
+          bg="#BA9AE1"
+          disabled={total < 12}
+          onClick={() => setPage(page + 1)}
+        >
+          Next
+        </Button>
+      </Box>
     </Box>
   );
 }
-// Passing `columns={[2, null, 3]}` and `columns={{sm: 2, md: 3}}`
-// will have the same effect.

@@ -18,20 +18,24 @@ import {
   PopoverContent,
   PopoverArrow,
   Spacer,
-  Img
+  Img,
+  Center,
 } from "@chakra-ui/react";
 import { useContext } from "react";
 import { AuthContext } from "../Context/AuthContext";
 
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { SearchIcon, HamburgerIcon } from "@chakra-ui/icons";
 import React from "react";
 export function Navbar() {
+  const { state } = useLocation();
+  const navigate = useNavigate();
   const { isAuth, toggleAuth, change } = useContext(AuthContext);
   const [data, setData] = React.useState(0);
-
+  const [input, setInput] = React.useState("");
+  const [value, setValue] = React.useState("");
   React.useEffect(() => {
-    fetch("https://pacific-refuge-88537.herokuapp.com/api/singleProduct")
+    fetch("https://mock-server-app-pzg9.onrender.com/singleProduct")
       .then((res) => res.json())
       .then((res) => setData(res.length))
       .catch((err) => console.log(err));
@@ -42,11 +46,41 @@ export function Navbar() {
     return;
   }
 
+  const handeChange = (value) => {
+    if (value === "mens") {
+      navigate("/mens");
+    } else if (value === "womens") {
+      navigate("/womens");
+    } else {
+      navigate("/everything-else");
+    }
+  };
+
+  const handelSearch = () => {
+    if (value === "mens") {
+      setInput("");
+      navigate("/mens", { state: { data: input } });
+    } else if (value === "womens") {
+      setInput("");
+      navigate("/womens", { state: { data: input } });
+    } else {
+      setInput("");
+      navigate("/everything-else", { state: { data: input } });
+    }
+  };
   return (
     <>
       <Show above="md">
-        <Box w="100%">
-          <Flex bg=" black" color="#FFF" p="10px">
+        <Box w="100%" position={"fixed"} zIndex={10}>
+          <Flex
+            fontWeight={"bold"}
+            bgGradient={[
+              "linear(to-tr, teal.300, yellow.600)",
+              "linear(to-t, blue.200, teal.500)",
+              "linear(to-b, orange.100, purple.400)",
+            ]}
+            p="10px"
+          >
             <Box fontSize="11px" m="10px" w="30%">
               <Flex>
                 {" "}
@@ -63,9 +97,9 @@ export function Navbar() {
             </Box>
 
             <Spacer />
-            <Box margin="10px">
+            <Center fontWeight={"bold"}>
               <Link to="/">SSENSE</Link>
-            </Box>
+            </Center>
 
             <Spacer />
             <Box fontSize="11px" m="10px" w="30%">
@@ -79,10 +113,17 @@ export function Navbar() {
                     <Portal>
                       <PopoverContent>
                         <PopoverArrow />
-                        <Select width="80%" placeholder="Select option">
-                          <option value="option1">MENSWEAR</option>
-                          <option value="option2">WOMENSWEAR</option>
-                          <option value="option3">EVERYTINKG-ELSE</option>
+                        <Select
+                          onChange={(e) => {
+                            setValue(e.target.value);
+                            handeChange(e.target.value);
+                          }}
+                          width="80%"
+                          placeholder="Select option"
+                        >
+                          <option value="mens">MENSWEAR</option>
+                          <option value="womens">WOMENSWEAR</option>
+                          <option value="other">EVERYTINKG-ELSE</option>
                         </Select>
                         <PopoverCloseButton
                           margin="5px"
@@ -92,6 +133,8 @@ export function Navbar() {
                         <PopoverBody>
                           <Flex>
                             <Input
+                              value={input}
+                              onChange={(e) => setInput(e.target.value)}
                               placeholder="SEARCH HERE"
                               margin="10px"
                               size="md"
@@ -102,6 +145,7 @@ export function Navbar() {
                               variant="outline"
                               aria-label="Search database"
                               size="md"
+                              onClick={handelSearch}
                               icon={<SearchIcon />}
                             />
                           </Flex>
@@ -112,7 +156,7 @@ export function Navbar() {
                 </Box>
                 <Box margin="10px">
                   {isAuth ? (
-                    <button
+                    <Link
                       color="white"
                       bg="none"
                       onClick={() => {
@@ -120,7 +164,7 @@ export function Navbar() {
                       }}
                     >
                       LOGOUT
-                    </button>
+                    </Link>
                   ) : (
                     <Link to="/login">LOGIN</Link>
                   )}
@@ -134,7 +178,14 @@ export function Navbar() {
         </Box>
       </Show>
       <Show below="md">
-        <Box position="fixed" w="100%" bg="white">
+        <Box
+          position="fixed"
+          zIndex={10}
+          w="100%"
+          bgGradient={"linear(to-b, orange.100, purple.400)"}
+          // bgColor="red"
+          // bg="white"
+        >
           <Flex p="10px">
             <Box>
               <Menu>
@@ -157,7 +208,18 @@ export function Navbar() {
                   </MenuItem>
 
                   <MenuItem>
-                    <Link to="/login">LOGIN</Link>
+                    {isAuth ? (
+                      <button
+                        bg="none"
+                        onClick={() => {
+                          toggleState();
+                        }}
+                      >
+                        LOGOUT
+                      </button>
+                    ) : (
+                      <Link to="/login">LOGIN</Link>
+                    )}
                   </MenuItem>
                   <MenuItem>
                     <Link to="/cart">SHOPING_BAG({data})</Link>
@@ -179,10 +241,17 @@ export function Navbar() {
                 <Portal>
                   <PopoverContent>
                     <PopoverArrow />
-                    <Select width="80%" placeholder="Select option">
-                      <option value="option1">MENSWEAR</option>
-                      <option value="option2">WOMENSWEAR</option>
-                      <option value="option3">EVERYTINKG-ELSE</option>
+                    <Select
+                      onChange={(e) => {
+                        setValue(e.target.value);
+                        handeChange(e.target.value);
+                      }}
+                      width="80%"
+                      placeholder="Select option"
+                    >
+                      <option value="mens">MENSWEAR</option>
+                      <option value="womens">WOMENSWEAR</option>
+                      <option value="other">EVERYTINKG-ELSE</option>
                     </Select>
                     <PopoverCloseButton
                       margin="5px"
@@ -192,11 +261,14 @@ export function Navbar() {
                     <PopoverBody>
                       <Flex>
                         <Input
+                          value={input}
+                          onChange={(e) => setInput(e.target.value)}
                           placeholder="SEARCH HERE"
                           margin="10px"
                           size="md"
                         />
                         <IconButton
+                          onClick={handelSearch}
                           margin="10px"
                           fontSize="18px"
                           variant="outline"
@@ -211,18 +283,35 @@ export function Navbar() {
               </Popover>
             </Box>
             <Spacer />
-            <Link to="/">SSENSE</Link>
+            <Center fontWeight={"bold"}>
+              {" "}
+              <Link to="/">SSENSE</Link>
+            </Center>
             <Spacer />
             <Box>
               <Button margin="10px" padding="0px">
-                <Link to="/login">
-                  <Img
-                    fontSize="18px"
-                    size="md"
-                    width="25px"
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8KGl_KSisz6hjoKP5iBpmUJmOVnqglWkCCCunX-b10HJ-HaLtnhZKukedAzDRvpNH4bc&usqp=CAU"
-                  ></Img>
-                </Link>
+                {isAuth ? (
+                  <Link to="/login">
+                    <Img
+                      onClick={() => {
+                        toggleState();
+                      }}
+                      fontSize="18px"
+                      size="md"
+                      width="25px"
+                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8KGl_KSisz6hjoKP5iBpmUJmOVnqglWkCCCunX-b10HJ-HaLtnhZKukedAzDRvpNH4bc&usqp=CAU"
+                    ></Img>
+                  </Link>
+                ) : (
+                  <Link to="/login">
+                    <Img
+                      fontSize="18px"
+                      size="md"
+                      width="25px"
+                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8KGl_KSisz6hjoKP5iBpmUJmOVnqglWkCCCunX-b10HJ-HaLtnhZKukedAzDRvpNH4bc&usqp=CAU"
+                    ></Img>
+                  </Link>
+                )}
               </Button>
               <Button margin="10px" padding="0px">
                 <Link to="/cart">

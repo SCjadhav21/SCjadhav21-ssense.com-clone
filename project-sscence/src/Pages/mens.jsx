@@ -1,63 +1,65 @@
-import {
-  Text,
-  Button,
-  InputGroup,
-  Select,
-  Img,
-  SimpleGrid,
-  Flex,
-  Box
-} from "@chakra-ui/react";
-import React from "react";
-// import { useContext } from "react";
-// import { AuthContext } from "../Context/AuthContext";
+import { Text, Button, Img, SimpleGrid, Box, useToast } from "@chakra-ui/react";
+import React, { useState } from "react";
 import axios from "axios";
 
 import { useContext } from "react";
 import { AuthContext } from "../Context/AuthContext";
+import { useLocation } from "react-router-dom";
 
 export function Mens() {
+  const toast = useToast();
   let [data, setData] = React.useState([]);
-
+  let [page, setPage] = useState(1);
+  let [total, setTotal] = useState(12);
   const { toggleChange } = useContext(AuthContext);
-
+  let state = useLocation().state;
   const createData = (el) => {
-    fetch("https://pacific-refuge-88537.herokuapp.com/api/singleProduct", {
+    fetch("https://mock-server-app-pzg9.onrender.com/singleProduct", {
       method: "POST",
 
       body: JSON.stringify(el),
 
       headers: {
-        "Content-type": "application/json"
-      }
+        "Content-type": "application/json",
+      },
+    });
+    toast({
+      title: "Cart Added",
+      description: "product added succesfully to bag",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
     });
 
-    alert("product added succesfully to bag");
     toggleChange();
   };
 
   React.useEffect(() => {
-    let url =
-      "https://pacific-refuge-88537.herokuapp.com/api/clothing?category=Mens";
+    let url;
+    if (state?.data && state?.data !== "" && state?.data !== null) {
+      url = `https://mock-server-app-pzg9.onrender.com/clothing?category=Mens&_page=${page}&_limit=12&q=${state.data}`;
+    } else {
+      url = `https://mock-server-app-pzg9.onrender.com/clothing?category=Mens&_page=${page}&_limit=12`;
+    }
 
     axios
       .get(url)
       .then((res) => {
         setData(res.data);
+        setTotal(res.data.length);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [page, state]);
 
   return (
-    <Box>
+    <Box pt="80px">
       <SimpleGrid columns={[2, 3, 4]} spacing="40px">
         {data?.map((el, index) => {
           return (
             <Box
               display="grid"
-              // flexDirection="columns"
               justifyContent="center"
               justifyItems="center"
               padding="20px"
@@ -77,6 +79,23 @@ export function Mens() {
           );
         })}
       </SimpleGrid>
+      <Box display={"flex"} gap={6} m="30px">
+        <Button
+          bg="#BA9AE1"
+          disabled={page <= 1}
+          onClick={() => setPage(page - 1)}
+        >
+          Prev
+        </Button>
+        <Button bg="#BA9AE1">{page}</Button>
+        <Button
+          bg="#BA9AE1"
+          disabled={total < 12}
+          onClick={() => setPage(page + 1)}
+        >
+          Next
+        </Button>
+      </Box>
     </Box>
   );
 }
