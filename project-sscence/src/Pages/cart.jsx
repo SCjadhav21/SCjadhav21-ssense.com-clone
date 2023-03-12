@@ -2,47 +2,43 @@ import { Box, Img, Button, Text } from "@chakra-ui/react";
 import React from "react";
 import { useContext } from "react";
 import { AuthContext } from "../Context/AuthContext";
-import { Link, Navlink, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 export function Cart() {
   const [data, setData] = React.useState([]);
-  const { mail, isAuth, change, toggleChange, toggleAuth } = useContext(
-    AuthContext
-  );
+  const { mail, isAuth, change, toggleChange, toggleAuth } =
+    useContext(AuthContext);
 
   React.useEffect(() => {
-    fetch("https://pacific-refuge-88537.herokuapp.com/api/singleProduct")
+    fetch("https://mock-server-app-pzg9.onrender.com/singleProduct")
       .then((res) => res.json())
       .then((res) => {
         setData(res);
       })
       .catch((err) => console.log(err));
   }, [change]);
-  console.log(isAuth);
 
   const createData = (id) => {
-    fetch(
-      `https://pacific-refuge-88537.herokuapp.com/api/singleProduct/${id}`,
-      {
-        method: "DELETE",
+    fetch(`https://mock-server-app-pzg9.onrender.com/singleProduct/${id}`, {
+      method: "DELETE",
 
-        headers: {
-          "Content-type": "application/json"
-        }
-      }
-    );
+      headers: {
+        "Content-type": "application/json",
+      },
+    });
     alert("product deleted succesfully from bag");
     toggleChange();
   };
 
   const goToCkeckout = () => {
     toggleAuth();
-    return;
   };
-console.log(mail)
+
   return (
-    <Box p="0px 30px"
+    <Box
+      p="0px 30px"
+      pt={"80px"}
       display="flex"
-      flexDirection={{ sm: "column", md: "row" }}
+      flexDirection={["column", "column", "row"]}
       justifyContent="center"
     >
       {/* SHOPPING BAG */}
